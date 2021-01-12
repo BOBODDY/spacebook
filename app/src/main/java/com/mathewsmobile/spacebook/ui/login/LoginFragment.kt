@@ -52,7 +52,7 @@ class LoginFragment : Fragment() {
             Log.d(TAG, "Login succeeded, going to feed")
             findNavController().navigate(R.id.action_login_successful)
         } else {
-            TODO("Implement login, error state")
+            Log.e(TAG, "Failed to login")
         }
     }
     

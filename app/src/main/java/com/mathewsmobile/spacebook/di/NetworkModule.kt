@@ -1,5 +1,6 @@
 package com.mathewsmobile.spacebook.di
 
+import com.mathewsmobile.spacebook.network.FeedService
 import com.mathewsmobile.spacebook.network.LoginService
 import dagger.Module
 import dagger.Provides
@@ -23,5 +24,10 @@ object NetworkModule {
     @Provides
     fun provideLoginService(retrofit: Retrofit): LoginService {
         return retrofit.create(LoginService::class.java)
+    }
+    
+    @Provides
+    fun provideFeedService(retrofit: Retrofit): FeedService {
+        return retrofit.create(FeedService::class.java)
     }
 }
