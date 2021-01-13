@@ -10,9 +10,11 @@ import android.view.ViewGroup
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.mathewsmobile.spacebook.R
 import com.mathewsmobile.spacebook.model.FeedItem
+import com.mathewsmobile.spacebook.model.Post
 import java.lang.Exception
 
 class FeedAdapter : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
@@ -108,14 +110,15 @@ class FeedAdapter : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
         private val listItem: ConstraintLayout = view.findViewById(R.id.newPostItem)
 
         override fun bind(item: FeedItem) {
-            val newPost = item.getPayload() as FeedItem.Post
+            val newPost = item.getPayload() as Post
 
             title.text = newPost.title
             date.text = newPost.postedAt
 
-            listItem.setOnClickListener {
+            listItem.setOnClickListener { view ->
                 // TODO Go to the post page for the relevant post
                 Log.d("NewPostViewHolder", "Trying to view the post ${newPost.id}")
+                view.findNavController().navigate(R.id.actionViewPost)
             }
         }
     }
@@ -135,12 +138,14 @@ class FeedAdapter : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
             commentMessage.text = comment.message
             commentDate.text = comment.commentedAt
 
-            listItem.setOnClickListener {
+            listItem.setOnClickListener { view ->
                 // TODO Go to the post page for the relevant post
                 Log.d(
                     "NewCommentViewHolder",
                     "Trying to view the comment on post ${comment.postId}"
                 )
+
+                view.findNavController().navigate(R.id.actionViewPost)
             }
         }
     }

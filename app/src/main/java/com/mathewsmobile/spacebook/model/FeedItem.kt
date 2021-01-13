@@ -1,6 +1,5 @@
 package com.mathewsmobile.spacebook.model
 
-import android.util.Log
 import com.google.gson.Gson
 
 data class FeedItem(val id: Int, val userId: Int, val occurredAt: String, val type: Type, val data: Map<String, Any>) {
@@ -24,19 +23,7 @@ data class FeedItem(val id: Int, val userId: Int, val occurredAt: String, val ty
     
     data class GithubPR(val githubId: String, val url: String, val repository: String, val pullRequestNumber: Int) : Payload 
 
-    data class GithubPush(val githubId: String, val url: String, val repository: String, val branch: String) : Payload 
-    
-    data class Post(val id: Int, val title: String, val body: String, val postedAt: String, val author: PostAuthor) : Payload {
-
-        data class PostAuthor(
-            val id: Int,
-            val email: String,
-            val name: String,
-            val registeredAt: String,
-            val githubUsername: String?,
-            val rating: Double
-        )
-    }
+    data class GithubPush(val githubId: String, val url: String, val repository: String, val branch: String) : Payload
 
         data class NewComment(
             val id: Int,

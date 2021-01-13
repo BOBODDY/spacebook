@@ -4,7 +4,10 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import com.mathewsmobile.spacebook.model.FeedItem
 import com.mathewsmobile.spacebook.model.FeedResponse
+import com.mathewsmobile.spacebook.model.Post
+import com.mathewsmobile.spacebook.model.PostResponse
 import com.mathewsmobile.spacebook.network.FeedService
 import retrofit2.Call
 import retrofit2.Callback
@@ -16,6 +19,29 @@ class FeedRepository @Inject constructor(private val feedService: FeedService) {
     private var currentPage = 1
     private var totalPages = Int.MAX_VALUE
     private val pageLive = MutableLiveData(1)
+    
+    fun getPost(postId: Int): LiveData<Post> {
+        val data = MutableLiveData<Post>()
+        feedService.getPost(postId)
+            .enqueue(object : Callback<PostResponse> {
+                override fun onFailure(call: Call<PostResponse>, t: Throwable) {
+                    Log.e(TAG, "Failure in getting post $postId", t)
+                }
+
+                override fun onResponse(
+                    call: Call<PostResponse>,
+                    response: Response<PostResponse>
+                ) {
+                    val body = response.body()
+                    body?.let {
+                        data.postValue(body.data)
+                    } ?: Log.d(TAG, "Something happened with the post")
+                }
+
+            })
+
+        return data
+    }
 
     fun getUserFeed(userId: Int): LiveData<FeedResponse> {
         val x = Transformations.switchMap(pageLive) { currentPage ->

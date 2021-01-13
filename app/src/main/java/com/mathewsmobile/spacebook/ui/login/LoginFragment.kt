@@ -50,7 +50,7 @@ class LoginFragment : Fragment() {
     private fun handleLoginResponse(it: LoginResponse) {
         if (it.loginSuccessful()) {
             Log.d(TAG, "Login succeeded, going to feed")
-            findNavController().navigate(R.id.action_login_successful)
+            findNavController().navigate(R.id.actionLoginSuccessful)
         } else {
             Log.e(TAG, "Failed to login")
         }
