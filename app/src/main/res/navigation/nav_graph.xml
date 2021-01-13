@@ -25,5 +25,9 @@
     <fragment
         android:id="@+id/postFragment"
         android:name="com.mathewsmobile.spacebook.ui.post.PostFragment"
-        android:label="PostFragment" />
+        android:label="PostFragment" >
+        <argument
+            android:name="postId"
+            app:argType="integer" />
+    </fragment>
 </navigation>

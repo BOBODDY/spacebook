@@ -1,6 +1,7 @@
 package com.mathewsmobile.spacebook.ui.post
 
 import android.os.Bundle
+import android.text.Html
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -32,7 +33,7 @@ class PostFragment : Fragment() {
 
         viewModel = ViewModelProvider(this).get(PostViewModel::class.java)
         
-        val postId = 3455  // TODO Get from arguments
+        val postId = requireArguments().getInt(POST_ID)
 
         viewModel.loadPost(postId)
 
@@ -59,15 +60,22 @@ class PostFragment : Fragment() {
             viewModel.loadPost(postId)
             postPullToRefresh.isRefreshing = true
         }
+
+        val actionBar = this.requireActivity().actionBar
+        actionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun showPostInfo(post: Post) {
         postTitle.text = post.title
-        postBody.text = post.body
+        postBody.text = Html.fromHtml(post.body)
         postAuthor.text = post.author.name
 
         post.author.rating?.let {
             postAuthorRating.rating = it.toFloat()
         }
+    }
+    
+    companion object {
+        const val POST_ID = "postId"
     }
 }

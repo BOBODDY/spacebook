@@ -10,11 +10,13 @@ import android.view.ViewGroup
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.mathewsmobile.spacebook.R
 import com.mathewsmobile.spacebook.model.FeedItem
 import com.mathewsmobile.spacebook.model.Post
+import com.mathewsmobile.spacebook.ui.post.PostFragment.Companion.POST_ID
 import java.lang.Exception
 
 class FeedAdapter : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
@@ -116,9 +118,10 @@ class FeedAdapter : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
             date.text = newPost.postedAt
 
             listItem.setOnClickListener { view ->
-                // TODO Go to the post page for the relevant post
                 Log.d("NewPostViewHolder", "Trying to view the post ${newPost.id}")
-                view.findNavController().navigate(R.id.actionViewPost)
+                val bundle = bundleOf(POST_ID  to newPost.id)
+
+                view.findNavController().navigate(R.id.actionViewPost, bundle)
             }
         }
     }
@@ -139,13 +142,12 @@ class FeedAdapter : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
             commentDate.text = comment.commentedAt
 
             listItem.setOnClickListener { view ->
-                // TODO Go to the post page for the relevant post
                 Log.d(
                     "NewCommentViewHolder",
                     "Trying to view the comment on post ${comment.postId}"
                 )
-
-                view.findNavController().navigate(R.id.actionViewPost)
+                val bundle = bundleOf(POST_ID  to comment.postId)
+                view.findNavController().navigate(R.id.actionViewPost, bundle)
             }
         }
     }
