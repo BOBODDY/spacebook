@@ -10,8 +10,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class AuthenticationService @Inject constructor(private val loginService: LoginService) {
+@Singleton
+class AuthenticationService @Inject constructor(private val loginService: LoginService, private val tokenStorage: TokenStorage) {
+    
+    val currentUserId = MutableLiveData<Int>()
 
     private val loginResponseLive = MutableLiveData<LoginResponse>()
 
@@ -25,11 +29,18 @@ class AuthenticationService @Inject constructor(private val loginService: LoginS
 
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 if (response.isSuccessful) {
-                    response.body()?.let {
-                        // TODO Get Authorizaton header (that's where the token lives), save somewhere secure
+                    response.body()?.let { resp ->
                         val authHeader = response.headers()["authorization"]
                         
-                        loginResponseLive.postValue(it)
+                        authHeader?.let {
+                            tokenStorage.saveToken(authHeader)
+                        }
+                        
+                        resp.data?.let { userData -> 
+                            currentUserId.postValue(userData.id)
+                        }
+                        
+                        loginResponseLive.postValue(resp)
                     }
                 } else {
                     Log.e(TAG, "Error signing in: ${response.errorBody()?.string()}")
@@ -40,6 +51,10 @@ class AuthenticationService @Inject constructor(private val loginService: LoginS
 
         })
         return loginResponseLive
+    }
+    
+    fun alreadyLoggedIn(): Boolean {
+        return tokenStorage.tokenValid()
     }
 
     companion object {

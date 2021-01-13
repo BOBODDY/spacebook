@@ -15,14 +15,20 @@ import java.lang.Exception
 
 class FeedAdapter : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
 
-    private var feedData: List<FeedItem> = listOf()
+    private var feedData: MutableList<FeedItem> = mutableListOf()
 
     fun setFeedData(newFeedData: List<FeedItem>) {
 //        feedData = newFeedData.fold(mutableListOf()) { list, element ->
 //            if (element.)
 //        }
-        feedData = newFeedData
+        feedData = newFeedData.toMutableList()
         notifyDataSetChanged()
+    }
+    
+    fun addFeedData(newFeedData: List<FeedItem>) {
+        val oldCount = feedData.size
+        feedData.addAll(newFeedData)
+        notifyItemRangeInserted(oldCount, newFeedData.size)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -63,6 +69,7 @@ class FeedAdapter : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
             FeedItem.Companion.Type.NEW_COMMENT -> NEW_COMMENT_TYPE
             FeedItem.Companion.Type.GITHUB_NEW_PR, FeedItem.Companion.Type.GITHUB_MERGED_PR -> GITHUB_PR_TYPE
             FeedItem.Companion.Type.GITHUB_PUSH -> GITHUB_PUSH_TYPE
+            FeedItem.Companion.Type.HIGH_RATING -> HIGH_RATING_TYPE
         }
     }
 
@@ -81,6 +88,7 @@ class FeedAdapter : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
         const val NEW_COMMENT_TYPE = 4
         const val GITHUB_PR_TYPE = 5
         const val GITHUB_PUSH_TYPE = 6
+        const val HIGH_RATING_TYPE = 7
     }
 
     abstract class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

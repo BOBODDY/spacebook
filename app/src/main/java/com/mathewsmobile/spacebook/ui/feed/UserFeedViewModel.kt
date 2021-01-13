@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import com.mathewsmobile.spacebook.AuthenticationService
 import com.mathewsmobile.spacebook.FeedRepository
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -16,23 +17,29 @@ class UserFeedViewModel(application: Application) : AndroidViewModel(application
     @InstallIn(ApplicationComponent::class)
     interface UserFeedViewModelEntryPoint {
         fun feedRepository(): FeedRepository
+        fun authenticationService(): AuthenticationService
     }
     
-    private val repository: FeedRepository by lazy {
-        val entryPoint = EntryPointAccessors.fromApplication(
+    private val entryPoint: UserFeedViewModelEntryPoint by lazy {
+        EntryPointAccessors.fromApplication(
             getApplication(),
             UserFeedViewModelEntryPoint::class.java
         )
-        
+    }
+    
+    private val repository: FeedRepository by lazy {
         return@lazy entryPoint.feedRepository()
     }
     
-    private val currentUserId = MutableLiveData<Int>()
-    val userFeed = Transformations.switchMap(currentUserId) { currentUserId ->
+    private val authService: AuthenticationService by lazy {
+        return@lazy entryPoint.authenticationService()
+    }
+    
+    val userFeed = Transformations.switchMap(authService.currentUserId) { currentUserId ->
         repository.getUserFeed(currentUserId)
     }
     
-    fun setUserId(userId: Int) {
-        currentUserId.postValue(userId)
+    fun loadNextPage() {
+        repository.nextPage()
     }
 }

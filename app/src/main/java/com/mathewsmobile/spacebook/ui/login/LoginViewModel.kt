@@ -19,19 +19,21 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     interface LoginViewModelEntryPoint {
         fun authenticationService(): AuthenticationService
     }
-
-    private val loginStatusLive: MutableLiveData<LoginResponse> = MutableLiveData()
-    val loginStatus: LiveData<LoginResponse> = loginStatusLive
-
-    fun login(email: String, password: String): LiveData<LoginResponse> {
+    
+    private val authenticationService: AuthenticationService by lazy {
         val hiltEntryPoint = EntryPointAccessors.fromApplication(
             getApplication(),
             LoginViewModelEntryPoint::class.java
         )
 
-        val loginResponse =
-            hiltEntryPoint.authenticationService().authenticateUser(LoginRequest(email, password))
-        
-        return loginResponse
+        hiltEntryPoint.authenticationService()
+    }
+
+    private val loginStatusLive: MutableLiveData<LoginResponse> = MutableLiveData()
+    val loginStatus: LiveData<LoginResponse> = loginStatusLive
+
+    fun login(email: String, password: String): LiveData<LoginResponse> {
+
+        return authenticationService.authenticateUser(LoginRequest(email, password))
     }
 }
