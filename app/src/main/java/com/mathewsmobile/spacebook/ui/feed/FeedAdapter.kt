@@ -2,10 +2,12 @@ package com.mathewsmobile.spacebook.ui.feed
 
 import android.content.Intent
 import android.net.Uri
+import android.text.Layout
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -17,14 +19,6 @@ class FeedAdapter : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
 
     private var feedData: MutableList<FeedItem> = mutableListOf()
 
-    fun setFeedData(newFeedData: List<FeedItem>) {
-//        feedData = newFeedData.fold(mutableListOf()) { list, element ->
-//            if (element.)
-//        }
-        feedData = newFeedData.toMutableList()
-        notifyDataSetChanged()
-    }
-    
     fun addFeedData(newFeedData: List<FeedItem>) {
         val oldCount = feedData.size
         feedData.addAll(newFeedData)
@@ -53,6 +47,11 @@ class FeedAdapter : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
                 val view =
                     LayoutInflater.from(parent.context).inflate(R.layout.item_push, parent, false)
                 PushViewHolder(view)
+            }
+            HIGH_RATING_TYPE -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_high_rating, parent, false)
+                HighRatingViewHolder(view)
             }
             else -> {
                 val view =
@@ -145,7 +144,7 @@ class FeedAdapter : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
             }
         }
     }
-    
+
     class PullRequestViewHolder(private val view: View) : ViewHolder(view) {
 
         private val title: TextView = view.findViewById(R.id.pullRequestTitle)
@@ -197,6 +196,19 @@ class FeedAdapter : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
                     Log.e("PushViewHolder", "Unable to go to github", e)
                 }
             }
+        }
+    }
+
+    class HighRatingViewHolder(view: View) : ViewHolder(view) {
+
+        private val date: TextView = view.findViewById(R.id.ratingDate)
+        private val ratingAmount: RatingBar = view.findViewById(R.id.ratingBar)
+
+        override fun bind(item: FeedItem) {
+            val rating = item.getPayload() as FeedItem.HighRating
+
+            date.text = item.occurredAt
+            ratingAmount.rating = rating.rating.toFloat()
         }
     }
 }
