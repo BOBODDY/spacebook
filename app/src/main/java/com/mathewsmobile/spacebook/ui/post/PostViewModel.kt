@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.mathewsmobile.spacebook.FeedRepository
+import com.mathewsmobile.spacebook.model.Comment
 import com.mathewsmobile.spacebook.model.FeedItem
 import com.mathewsmobile.spacebook.model.Post
 import com.mathewsmobile.spacebook.ui.feed.UserFeedViewModel
@@ -37,7 +38,9 @@ class PostViewModel (application: Application) : AndroidViewModel(application) {
     val postData: LiveData<Post> = Transformations.switchMap(postIdLive) { postId ->
         feedRepository.getPost(postId)
     }
-//    val commentsData: LiveData<List<Comment>> TODO
+    val commentsData: LiveData<List<Comment>> = Transformations.switchMap(postIdLive) { postId ->
+        feedRepository.getPostComments(postId)
+    }
     
     fun loadPost(postId: Int) {
         postIdLive.postValue(postId)

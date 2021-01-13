@@ -1,7 +1,7 @@
 package com.mathewsmobile.spacebook.network
 
 import com.mathewsmobile.spacebook.model.FeedResponse
-import com.mathewsmobile.spacebook.model.PostCommentsResponse
+import com.mathewsmobile.spacebook.model.CommentsResponse
 import com.mathewsmobile.spacebook.model.PostResponse
 import retrofit2.Call
 import retrofit2.http.GET
@@ -19,5 +19,5 @@ interface FeedService {
     fun getPost(@Path("postId") postId: Int): Call<PostResponse>
 
     @GET("posts/{postId}/comments")
-    fun getPostComments(@Path("postId") postId: Int): Call<PostCommentsResponse>
+    fun getPostComments(@Path("postId") postId: Int): Call<CommentsResponse>
 }

@@ -4,10 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import com.mathewsmobile.spacebook.model.FeedItem
-import com.mathewsmobile.spacebook.model.FeedResponse
-import com.mathewsmobile.spacebook.model.Post
-import com.mathewsmobile.spacebook.model.PostResponse
+import com.mathewsmobile.spacebook.model.*
 import com.mathewsmobile.spacebook.network.FeedService
 import retrofit2.Call
 import retrofit2.Callback
@@ -36,6 +33,29 @@ class FeedRepository @Inject constructor(private val feedService: FeedService) {
                     body?.let {
                         data.postValue(body.data)
                     } ?: Log.d(TAG, "Something happened with the post")
+                }
+
+            })
+
+        return data
+    }
+    
+    fun getPostComments(postId: Int): LiveData<List<Comment>> {
+        val data = MutableLiveData<List<Comment>>()
+        feedService.getPostComments(postId)
+            .enqueue(object : Callback<CommentsResponse> {
+                override fun onFailure(call: Call<CommentsResponse>, t: Throwable) {
+                    Log.e(TAG, "Failure in getting comments for $postId", t)
+                }
+
+                override fun onResponse(
+                    call: Call<CommentsResponse>,
+                    response: Response<CommentsResponse>
+                ) {
+                    val body = response.body()
+                    body?.let {
+                        data.postValue(body.data)
+                    } ?: Log.d(TAG, "Something happened with the comments")
                 }
 
             })
